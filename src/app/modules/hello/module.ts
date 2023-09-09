@@ -29,16 +29,20 @@ import { ModuleConfigJSON } from './types';
 import { HelloEndpoint } from './endpoint';
 import { HelloMethod } from './method';
 
+import { CounterStore } from './stores/counter';
+import { MessageStore } from './stores/message';
 
 export class HelloModule extends BaseModule {
 	public endpoint = new HelloEndpoint(this.stores, this.offchainStores);
 	public method = new HelloMethod(this.stores, this.events);
 	public commands = [];
 
-	// public constructor() {
-	// 	super();
-	// 	// registeration of stores and events
-	// }
+	public constructor() {
+		super();
+		// registration of stores and events
+		this.stores.register(CounterStore, new CounterStore(this.name, 0));
+		this.stores.register(MessageStore, new MessageStore(this.name, 1));
+	}
 
 	public metadata(): ModuleMetadata {
 		return {
