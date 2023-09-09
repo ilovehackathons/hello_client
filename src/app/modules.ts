@@ -4,5 +4,5 @@ import { HelloModule } from "./modules/hello/module";
 
 export const registerModules = (_app: Application): void => {
 
-    app.registerModule(new HelloModule());
+    _app.registerModule(new HelloModule());
 };

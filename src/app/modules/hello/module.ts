@@ -16,26 +16,25 @@
 // 	// VerifyStatus,
 // } from 'lisk-sdk';
 
-import {
-	BaseModule, BlockAfterExecuteContext, BlockExecuteContext, BlockVerifyContext,
-	GenesisBlockExecuteContext, InsertAssetContext, ModuleInitArgs,
-	ModuleMetadata, TransactionExecuteContext, TransactionVerifyContext,
-	VerificationResult, codec, utils
-} from 'lisk-sdk';
 import { validator } from '@liskhq/lisk-validator';
+import {
+	BaseModule, ModuleInitArgs,
+	ModuleMetadata, TransactionVerifyContext, VerificationResult, utils
+} from 'lisk-sdk';
 import { /* createHelloSchema, CreateHelloParams, */ configSchema } from './schema';
 import { ModuleConfigJSON } from './types';
 
 import { HelloEndpoint } from './endpoint';
 import { HelloMethod } from './method';
 
+import { CreateHelloCommand } from "./commands/create_hello_command";
 import { CounterStore } from './stores/counter';
 import { MessageStore } from './stores/message';
 
 export class HelloModule extends BaseModule {
 	public endpoint = new HelloEndpoint(this.stores, this.offchainStores);
 	public method = new HelloMethod(this.stores, this.events);
-	public commands = [];
+	public commands = [new CreateHelloCommand(this.stores, this.events)];
 
 	public constructor() {
 		super();
@@ -58,12 +57,17 @@ export class HelloModule extends BaseModule {
 	// }
 	// eslint-disable-next-line @typescript-eslint/require-await
 	public async init(args: ModuleInitArgs): Promise<void> {
-		// Get the module config defined in the config.json of the node
+		// Get the module config defined in the config.json file
 		const { moduleConfig } = args;
 		// Overwrite the default module config with values from config.json, if set
 		const config = utils.objects.mergeDeep({}, defaultConfig, moduleConfig) as ModuleConfigJSON;
-		// Validate the config with the config schema
+		// Validate the provided config with the config schema
 		validator.validate<ModuleConfigJSON>(configSchema, config);
+		// Call the command init() method with config as parameter
+		this.commands[0].init(config).catch(err => {
+			// eslint-disable-next-line no-console
+			console.log("Error: ", err);
+		});
 	}
 
 	// public async insertAssets(_context: InsertAssetContext) {
@@ -79,6 +83,15 @@ export class HelloModule extends BaseModule {
 	// verify transaction will be called multiple times in the transaction pool
 	// return { status: VerifyStatus.OK };
 	// }
+	// eslint-disable-next-line @typescript-eslint/require-await
+	public async verifyTransaction(context: TransactionVerifyContext): Promise<VerificationResult> {
+		// Verify transaction will be called multiple times in the transaction pool
+		context.logger.info('TX VERIFICATION');
+		const result = {
+			status: 1,
+		};
+		return result;
+	}
 
 	// public async beforeCommandExecute(_context: TransactionExecuteContext): Promise<void> {
 	// }
