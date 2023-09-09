@@ -38,6 +38,8 @@ import {
 	getHelloResponseSchema,
 } from './schema';
 
+import { NewHelloEvent } from './events/new_hello';
+
 export class HelloModule extends BaseModule {
 	public endpoint = new HelloEndpoint(this.stores, this.offchainStores);
 	public method = new HelloMethod(this.stores, this.events);
@@ -48,6 +50,9 @@ export class HelloModule extends BaseModule {
 		// registration of stores and events
 		this.stores.register(CounterStore, new CounterStore(this.name, 0));
 		this.stores.register(MessageStore, new MessageStore(this.name, 1));
+
+		this.events.register(NewHelloEvent, new NewHelloEvent(this.name));
+
 	}
 
 	// public metadata(): ModuleMetadata {

@@ -13,7 +13,7 @@ import { ModuleConfig } from '../types';
 
 import { MessageStore } from '../stores/message';
 import { counterKey, CounterStore, CounterStoreData } from '../stores/counter';
-// import { NewHelloEvent } from '../events/new_hello';
+import { NewHelloEvent } from '../events/new_hello';
 
 interface Params {
 	message: string;
@@ -86,14 +86,14 @@ export class CreateHelloCommand extends BaseCommand {
 		// 6. Save the Hello counter to the counter store.
 		await counterSubstore.set(context, counterKey, helloCounter);
 
-		// // 7. Emit a "New Hello" event
-		// // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-		// const newHelloEvent = this.events.get(NewHelloEvent);
-		// // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
-		// newHelloEvent.add(context, {
-		// 	senderAddress: context.transaction.senderAddress,
-		// 	message: context.params.message
-		// }, [context.transaction.senderAddress]);
+		// 7. Emit a "New Hello" event
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+		const newHelloEvent = this.events.get(NewHelloEvent);
+		// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call
+		newHelloEvent.add(context, {
+			senderAddress: context.transaction.senderAddress,
+			message: context.params.message
+		}, [context.transaction.senderAddress]);
 	}
 	// public async execute(_context: CommandExecuteContext<Params>): Promise<void> {
 	// }
