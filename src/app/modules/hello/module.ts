@@ -21,7 +21,7 @@ import {
 	BaseModule, ModuleInitArgs,
 	ModuleMetadata, TransactionVerifyContext, VerificationResult, utils
 } from 'lisk-sdk';
-import { /* createHelloSchema, CreateHelloParams, */ configSchema } from './schema';
+// import { /* createHelloSchema, CreateHelloParams, */ configSchema } from './schema';
 import { ModuleConfigJSON } from './types';
 
 import { HelloEndpoint } from './endpoint';
@@ -30,6 +30,13 @@ import { HelloMethod } from './method';
 import { CreateHelloCommand } from "./commands/create_hello_command";
 import { CounterStore } from './stores/counter';
 import { MessageStore } from './stores/message';
+
+import {
+	configSchema,
+	getHelloRequestSchema,
+	getHelloCounterResponseSchema,
+	getHelloResponseSchema,
+} from './schema';
 
 export class HelloModule extends BaseModule {
 	public endpoint = new HelloEndpoint(this.stores, this.offchainStores);
@@ -43,11 +50,38 @@ export class HelloModule extends BaseModule {
 		this.stores.register(MessageStore, new MessageStore(this.name, 1));
 	}
 
+	// public metadata(): ModuleMetadata {
+	// 	return {
+	// 		...this.baseMetadata(),
+	// 		endpoints: [],
+	// 		assets: [],
+	// 	};
+	// }
+
 	public metadata(): ModuleMetadata {
 		return {
-			...this.baseMetadata(),
-			endpoints: [],
+			endpoints: [
+				{
+					name: this.endpoint.getHello.name,
+					// eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+					request: getHelloRequestSchema,
+					response: getHelloResponseSchema,
+				},
+				{
+					name: this.endpoint.getHelloCounter.name,
+					response: getHelloCounterResponseSchema,
+				},
+			],
+			commands: this.commands.map(command => ({
+				name: command.name,
+				params: command.schema,
+			})),
+			events: this.events.values().map(v => ({
+				name: v.name,
+				data: v.schema,
+			})),
 			assets: [],
+			stores: [],
 		};
 	}
 

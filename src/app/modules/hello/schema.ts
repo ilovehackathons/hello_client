@@ -40,3 +40,40 @@ export const createHelloSchema = {
     },
   },
 };
+
+// https://github.com/LiskHQ/lisk-sdk-examples/blob/development/tutorials/hello/hello_client/src/app/modules/hello/schema.ts
+export const getHelloCounterResponseSchema = {
+  $id: 'modules/hello/endpoint/getHelloCounter',
+  type: 'object',
+  required: ['counter'],
+  properties: {
+    counter: {
+      type: 'number',
+      format: 'uint32'
+    },
+  },
+};
+
+export const getHelloResponseSchema = {
+  $id: 'modules/hello/endpoint/getHello',
+  type: 'object',
+  required: ['message'],
+  properties: {
+    message: {
+      type: 'string',
+      format: 'utf8'
+    },
+  },
+};
+
+export const getHelloRequestSchema = {
+  $id: 'modules/hello/endpoint/getHelloRequest',
+  type: 'object',
+  required: ['address'],
+  properties: {
+    address: {
+      type: 'string',
+      format: 'lisk32',
+    },
+  },
+};
