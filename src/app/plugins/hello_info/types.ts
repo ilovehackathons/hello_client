@@ -11,3 +11,7 @@ export interface Counter {
 export interface Height {
   height: number;
 }
+
+export interface HelloInfoPluginConfig {
+  syncInterval: number;
+}

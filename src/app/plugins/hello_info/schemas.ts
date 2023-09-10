@@ -41,3 +41,17 @@ export const heightSchema = {
     },
   },
 };
+
+export const configSchema = {
+  $id: '/plugins/helloInfo/config',
+  type: 'object',
+  properties: {
+    syncInterval: {
+      type: 'integer',
+    },
+  },
+  required: ['syncInterval'],
+  default: {
+    syncInterval: 120000, // milliseconds
+  },
+};
